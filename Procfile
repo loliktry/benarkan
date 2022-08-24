@@ -1,0 +1,1 @@
+worker: python scraping_kompas.py
