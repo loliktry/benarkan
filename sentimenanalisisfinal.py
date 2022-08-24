@@ -31,7 +31,7 @@ Encoder = LabelEncoder()
 Tfidf_vect = TfidfVectorizer()
 
 # Configure data latih
-DATA_LATIH = "./datasetgabung.csv"
+DATA_LATIH = "./DataLatih.csv"
 
 def train_model():
     """Training step for Support Vector Classifier
