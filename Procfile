@@ -1,1 +1,1 @@
-worker: python scraping_kompas.py
+worker: python sentimenanalisisfinal.py
