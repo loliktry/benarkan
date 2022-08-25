@@ -1,3 +1,4 @@
+from ast import Delete
 from concurrent.futures.process import _threads_wakeups
 from operator import countOf
 import requests
@@ -188,7 +189,8 @@ def cari_berita():
         
         #cleanedthings(kalimat_berita_bersih)
         if "  " in  kalimat_berita_bersih:  kalimat_berita_bersih =  kalimat_berita_bersih.replace("  "," ") 
-        firebase.delete('/Berita')
+        
+        firebase.delete('/Berita', None)
         firebase.post('/Berita', {'Judul':list_judul_berita[i-1],'Konten':kalimat_berita_bersih})
         print('======= berita ke-{} ======='.format(i))
         print(kalimat_berita_bersih)
