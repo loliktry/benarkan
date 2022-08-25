@@ -139,7 +139,8 @@ def cari_berita():
     from firebase import firebase
     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
     firebase = firebase.FirebaseApplication('https://berita-benar-default-rtdb.asia-southeast1.firebasedatabase.app/', None)
-
+    firebase.delete('/Berita', None)
+    
     url = 'https://www.kompas.com/'
     html        = requests.get(url)
     soup        = BeautifulSoup(html.content, 'lxml')
@@ -190,7 +191,7 @@ def cari_berita():
         #cleanedthings(kalimat_berita_bersih)
         if "  " in  kalimat_berita_bersih:  kalimat_berita_bersih =  kalimat_berita_bersih.replace("  "," ") 
         
-        firebase.delete('/Berita', None)
+        
         firebase.post('/Berita', {'Judul':list_judul_berita[i-1],'Konten':kalimat_berita_bersih})
         print('======= berita ke-{} ======='.format(i))
         print(kalimat_berita_bersih)
