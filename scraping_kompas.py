@@ -11,7 +11,7 @@ import re
 import string
 import pandas as pd
 import numpy as np
-import nltk
+#import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from sklearn.preprocessing import LabelEncoder
