@@ -140,7 +140,7 @@ def cari_berita():
     print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
     firebase = firebase.FirebaseApplication('https://berita-benar-default-rtdb.asia-southeast1.firebasedatabase.app/', None)
     firebase.delete('/Berita', None)
-    
+
     url = 'https://www.kompas.com/'
     html        = requests.get(url)
     soup        = BeautifulSoup(html.content, 'lxml')
@@ -199,6 +199,7 @@ def cari_berita():
 
 train_data()
 sched = BlockingScheduler(timezone="Asia/Jakarta")
+#sched.add_job(cari_berita, "interval", seconds=15)
 sched.add_job(cari_berita, "interval", minutes=2)
 
 sched.start()
