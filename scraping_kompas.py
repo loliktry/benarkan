@@ -188,7 +188,7 @@ def cari_berita():
         
         #cleanedthings(kalimat_berita_bersih)
         if "  " in  kalimat_berita_bersih:  kalimat_berita_bersih =  kalimat_berita_bersih.replace("  "," ") 
-        
+        firebase.delete('/Berita')
         firebase.post('/Berita', {'Judul':list_judul_berita[i-1],'Konten':kalimat_berita_bersih})
         print('======= berita ke-{} ======='.format(i))
         print(kalimat_berita_bersih)
