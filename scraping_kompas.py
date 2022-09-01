@@ -5,6 +5,7 @@ import requests
 from bs4  import BeautifulSoup
 from nltk import tokenize
 
+
 import re, string
 import time
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -24,6 +25,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import GradientBoostingClassifier,RandomForestClassifier
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from sklearn.tree import DecisionTreeClassifier
+import xgboost as xgb
+#graph
+from sklearn import metrics
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 
 # Random seed for consistency
 np.random.seed(500)
@@ -66,13 +72,31 @@ def train_data():
 
     # Classifier - Algorithm - SVM
     # fit the training dataset on the classifier
-    SVM = svm.SVC(C=1.0, kernel='linear', degree=1, gamma="auto", verbose=True)
+    SVM = svm.SVC(C=1.0, kernel='linear', probability=True, degree=1, gamma="auto", verbose=True)
     SVM.fit(Train_X_Tfidf, Train_Y)  # predict the labels on validation dataset
     # Use accuracy_score function to get the accuracy
     predictions_SVM = SVM.predict(Test_X_Tfidf)
     print("SVM Accuracy Score -> ", accuracy_score(predictions_SVM, Test_Y)*100)
     print(classification_report(Test_Y, predictions_SVM))
     #return SVM
+    #define metrics
+    y_SVM = SVM.predict_proba(Test_X_Tfidf)[::,1]
+    fpr, tpr, _ = metrics.roc_curve(Test_Y,  y_SVM)
+    auc = round(metrics.roc_auc_score(Test_Y, y_SVM), 4)
+    plt.plot(fpr,tpr,label="Support Vector Machine, AUC="+str(auc))
+    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate')
+    plt.legend()
+    #confusion matric
+    confusion_matrix = metrics.confusion_matrix(Test_Y, predictions_SVM)
+    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [False, True])
+    cm_display.plot()    
+    plt.show()
+    plt.figure().clear()
+    plt.close()
+    plt.cla()
+    plt.clf()
+
 
     # Classifier - Algorithm - Logistic Regretion
     # fit the training dataset on the classifier
@@ -84,6 +108,25 @@ def train_data():
     prediksi_LR = LR.predict(Test_X_Tfidf)
     print ("Logistric Regretion score -> ", accuracy_score(prediksi_LR, Test_Y)*100)
     print(classification_report(Test_Y, prediksi_LR))
+
+    #define metrics
+    y_LR = LR.predict_proba(Test_X_Tfidf)[::,1]
+    fpr, tpr, _ = metrics.roc_curve(Test_Y,  y_LR)
+    auc = round(metrics.roc_auc_score(Test_Y, y_LR), 4)
+    plt.plot(fpr,tpr,label="Logistic Regression, AUC="+str(auc))
+    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate')    
+    plt.legend()
+    #confusion matric
+    confusion_matrix = metrics.confusion_matrix(Test_Y, prediksi_LR)
+    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [False, True])
+    cm_display.plot()    
+    plt.show()
+    plt.figure().clear()
+    plt.close()
+    plt.cla()
+    plt.clf()
+    
 
     # Classifier - Algorithm - Decision Tree Classification
     # fit the training dataset on the classifier
@@ -97,6 +140,24 @@ def train_data():
     print ("Decission Tree score -> ", accuracy_score( Test_Y, prediksi_DT)*100)
     print(classification_report(Test_Y, prediksi_DT))
 
+    #define metrics
+    y_DT = DT.predict_proba(Test_X_Tfidf)[::,1]
+    fpr, tpr, _ = metrics.roc_curve(Test_Y,  y_DT)
+    auc = round(metrics.roc_auc_score(Test_Y, y_DT), 4)
+    plt.plot(fpr,tpr,label="Decission Tree Classifier, AUC="+str(auc))
+    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate')    
+    plt.legend()
+    #confusion matric
+    confusion_matrix = metrics.confusion_matrix(Test_Y, prediksi_DT)
+    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [False, True])
+    cm_display.plot()    
+    plt.show()
+    plt.figure().clear()
+    plt.close()
+    plt.cla()
+    plt.clf()
+
     # Classifier - Algorithm - Gradient Boosting Classifier
     # fit the training dataset on the classifier
     GBC = GradientBoostingClassifier(random_state=0)
@@ -109,6 +170,25 @@ def train_data():
     print ("Gradient Boosting Classifier score -> ", accuracy_score( Test_Y, prediksi_GBC)*100)
     print(classification_report(Test_Y, prediksi_GBC))
 
+    #define metrics
+    y_GBC = GBC.predict_proba(Test_X_Tfidf)[::,1]
+    fpr, tpr, _ = metrics.roc_curve(Test_Y,  y_GBC)
+    auc = round(metrics.roc_auc_score(Test_Y, y_GBC), 4)
+    plt.plot(fpr,tpr,label="Gradient Boosting Classifier, AUC="+str(auc))
+    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate') 
+    plt.legend()
+    #confusion matric
+    confusion_matrix = metrics.confusion_matrix(Test_Y, prediksi_GBC)
+    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [False, True])
+    cm_display.plot()    
+    plt.show()
+    plt.figure().clear()
+    plt.close()
+    plt.cla()
+    plt.clf()
+
+
     # Classifier - Algorithm - Random Forest
     # fit the training dataset on the classifier
     RFC = RandomForestClassifier(random_state=0)
@@ -120,6 +200,45 @@ def train_data():
 
     print ("Random Forest Classifier score -> ", accuracy_score( Test_Y, prediksi_RFC)*100)
     print(classification_report(Test_Y, prediksi_RFC))
+
+    #define metrics
+    y_RFC = RFC.predict_proba(Test_X_Tfidf)[::,1]
+    fpr, tpr, _ = metrics.roc_curve(Test_Y,  y_RFC)
+    auc = round(metrics.roc_auc_score(Test_Y, y_RFC), 4)
+    plt.plot(fpr,tpr,label="Random Forest Classifier, AUC="+str(auc))
+    plt.ylabel('True Positive Rate')
+    plt.xlabel('False Positive Rate')
+    
+    #confusion matric
+    confusion_matrix = metrics.confusion_matrix(Test_Y, prediksi_RFC)
+    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [False, True])
+    cm_display.plot()   
+    plt.legend() 
+    plt.show()
+    plt.figure().clear()
+    plt.close()
+    plt.cla()
+    plt.clf()
+
+    # Classifier - Algorithm - XG Boost
+    # fit the training dataset on the classifier
+    # xg_reg = xgb.XGBRegressor(objective ='reg:linear', colsample_bytree = 0.3, learning_rate = 0.1,
+    #             max_depth = 5, alpha = 10, n_estimators = 10)
+    # xg_reg.fit(Train_X_Tfidf, Train_Y)
+
+    # prediksi_XGBoost = xg_reg.predict(Test_X_Tfidf)
+
+    # print ("XG Boost Classifier score -> ", accuracy_score( Test_Y, prediksi_XGBoost)*100)
+    # print(classification_report(Test_Y, prediksi_XGBoost))
+
+    #create ROC curve
+    #plt.plot(fpr,tpr)
+
+    plt.legend()
+    plt.show()
+
+
+    
 
 def word_drop(text):
     remove = string.punctuation
